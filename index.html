@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0" />
   <title>成語星星樂園 🌟</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,6 +22,7 @@
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      font-size: 18px;
       background: linear-gradient(135deg, #FFF0F5 0%, #FFF8FC 100%);
       min-height: 100vh;
       display: flex;
@@ -54,8 +55,8 @@
     .logo-wrap { text-align: center; margin-bottom: 16px; }
     .logo-img { width: 90px; height: 90px; border-radius: 22px; object-fit: cover; }
     .logo-emoji { font-size: 72px; line-height: 1; }
-    .app-title { font-size: 28px; font-weight: 800; color: var(--pink); letter-spacing: 2px; margin-bottom: 4px; }
-    .app-sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+    .app-title { font-size: 34px; font-weight: 800; color: var(--pink); letter-spacing: 2px; margin-bottom: 4px; }
+    .app-sub { font-size: 18px; color: var(--muted); margin-bottom: 20px; }
     .stars-card {
       background: var(--pink-light);
       border: 2px solid var(--pink-border);
@@ -65,10 +66,10 @@
       margin-bottom: 24px;
       width: 100%;
     }
-    .stars-label { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
-    .stars-count { font-size: 36px; font-weight: 800; color: var(--gold); }
+    .stars-label { font-size: 18px; color: var(--muted); margin-bottom: 4px; }
+    .stars-count { font-size: 44px; font-weight: 800; color: var(--gold); }
     .stars-count::before { content: "⭐ "; font-size: 28px; }
-    .section-title { font-size: 17px; font-weight: 700; color: var(--text); align-self: flex-start; margin-bottom: 12px; }
+    .section-title { font-size: 22px; font-weight: 700; color: var(--text); align-self: flex-start; margin-bottom: 12px; }
     .diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-bottom: 24px; }
     .diff-card {
       background: white;
@@ -88,14 +89,14 @@
     .diff-card.selected.hard { border-color: var(--red); }
     .diff-card.selected.mixed { border-color: var(--purple); }
     .diff-emoji { font-size: 26px; margin-bottom: 5px; }
-    .diff-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .diff-name { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
     .diff-card.selected.beginner .diff-name { color: var(--pink); }
     .diff-card.selected.easy .diff-name { color: var(--green); }
     .diff-card.selected.medium .diff-name { color: var(--orange); }
     .diff-card.selected.hard .diff-name { color: var(--red); }
     .diff-card.selected.mixed .diff-name { color: var(--purple); }
-    .diff-desc { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-    .diff-stars { font-size: 12px; font-weight: 700; color: var(--muted); }
+    .diff-desc { font-size: 15px; color: var(--muted); margin-bottom: 4px; }
+    .diff-stars { font-size: 16px; font-weight: 700; color: var(--muted); }
     .diff-card.selected.beginner .diff-stars { color: var(--pink); }
     .diff-card.selected.easy .diff-stars { color: var(--green); }
     .diff-card.selected.medium .diff-stars { color: var(--orange); }
@@ -107,8 +108,8 @@
       color: white;
       border: none;
       border-radius: 32px;
-      padding: 18px 60px;
-      font-size: 19px;
+      padding: 20px 60px;
+      font-size: 24px;
       font-weight: 800;
       cursor: pointer;
       box-shadow: 0 4px 18px rgba(255,107,157,0.4);
@@ -127,23 +128,23 @@
     }
     .nav-tab {
       flex: 1;
-      padding: 12px 0;
+      padding: 14px 0;
       text-align: center;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 16px;
       color: var(--muted);
       border: none;
       background: none;
       transition: color 0.15s;
     }
     .nav-tab.active { color: var(--pink); font-weight: 700; }
-    .nav-tab-icon { font-size: 22px; display: block; margin-bottom: 2px; }
+    .nav-tab-icon { font-size: 28px; display: block; margin-bottom: 2px; }
 
     /* ===== GAME SCREEN ===== */
     #game { padding: 20px; overflow-y: auto; }
     .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .progress-info { font-size: 13px; color: var(--muted); font-weight: 600; }
-    .session-stars { font-size: 14px; font-weight: 700; color: var(--gold); }
+    .progress-info { font-size: 18px; color: var(--muted); font-weight: 600; }
+    .session-stars { font-size: 20px; font-weight: 700; color: var(--gold); }
     .progress-bar-wrap { background: var(--pink-border); border-radius: 8px; height: 8px; margin-bottom: 20px; overflow: hidden; }
     .progress-bar { background: linear-gradient(90deg, var(--pink), #FF8EC0); height: 100%; border-radius: 8px; transition: width 0.4s; }
     .question-card {
@@ -154,15 +155,15 @@
       text-align: center;
       margin-bottom: 20px;
     }
-    .chengyu-text { font-size: 36px; font-weight: 800; color: var(--pink); letter-spacing: 4px; margin-bottom: 8px; }
-    .question-text { font-size: 15px; color: var(--text); line-height: 1.5; }
+    .chengyu-text { font-size: 46px; font-weight: 800; color: var(--pink); letter-spacing: 6px; margin-bottom: 10px; }
+    .question-text { font-size: 20px; color: var(--text); line-height: 1.6; }
     .options-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
     .option-btn {
       background: white;
       border: 2.5px solid var(--pink-border);
       border-radius: 16px;
-      padding: 14px 16px;
-      font-size: 14px;
+      padding: 18px 16px;
+      font-size: 19px;
       color: var(--text);
       cursor: pointer;
       text-align: left;
@@ -180,13 +181,13 @@
       background: var(--pink-border);
       color: var(--pink);
       border-radius: 8px;
-      width: 28px;
-      height: 28px;
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 17px;
       flex-shrink: 0;
     }
     .option-btn.correct .option-label { background: #C8E6C9; color: #2E7D32; }
@@ -199,29 +200,29 @@
     }
     .feedback-box.correct { background: #E8F5E9; border: 2px solid #A5D6A7; }
     .feedback-box.wrong { background: #FFEBEE; border: 2px solid #FFCDD2; }
-    .feedback-title { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+    .feedback-title { font-size: 21px; font-weight: 800; margin-bottom: 6px; }
     .feedback-box.correct .feedback-title { color: #2E7D32; }
     .feedback-box.wrong .feedback-title { color: #C62828; }
-    .feedback-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+    .feedback-text { font-size: 18px; color: var(--text); line-height: 1.6; }
     .story-toggle {
       background: none;
       border: 1.5px solid var(--pink);
       border-radius: 10px;
       color: var(--pink);
-      font-size: 13px;
-      padding: 6px 12px;
+      font-size: 17px;
+      padding: 8px 16px;
       cursor: pointer;
       margin-top: 8px;
       font-weight: 600;
     }
-    .story-text { font-size: 13px; color: #555; line-height: 1.6; margin-top: 8px; display: none; background: white; border-radius: 10px; padding: 10px; }
+    .story-text { font-size: 17px; color: #555; line-height: 1.7; margin-top: 8px; display: none; background: white; border-radius: 10px; padding: 12px; }
     .next-btn {
       background: var(--pink);
       color: white;
       border: none;
       border-radius: 24px;
-      padding: 14px;
-      font-size: 16px;
+      padding: 18px;
+      font-size: 21px;
       font-weight: 700;
       cursor: pointer;
       width: 100%;
@@ -234,7 +235,7 @@
     /* ===== RESULT SCREEN ===== */
     #result { padding: 32px 20px; align-items: center; overflow-y: auto; }
     .rank-emoji { font-size: 72px; margin-bottom: 8px; }
-    .rank-label { font-size: 24px; font-weight: 800; color: var(--pink); margin-bottom: 20px; }
+    .rank-label { font-size: 30px; font-weight: 800; color: var(--pink); margin-bottom: 20px; }
     .result-card {
       background: var(--pink-light);
       border: 2px solid var(--pink-border);
@@ -245,15 +246,15 @@
     }
     .result-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--pink-border); }
     .result-row:last-child { border-bottom: none; }
-    .result-key { font-size: 14px; color: var(--muted); }
-    .result-val { font-size: 16px; font-weight: 700; color: var(--text); }
-    .result-stars-big { font-size: 28px; font-weight: 800; color: var(--gold); }
+    .result-key { font-size: 19px; color: var(--muted); }
+    .result-val { font-size: 21px; font-weight: 700; color: var(--text); }
+    .result-stars-big { font-size: 34px; font-weight: 800; color: var(--gold); }
     .result-btns { display: flex; gap: 12px; width: 100%; }
     .result-btn {
       flex: 1;
-      padding: 16px;
+      padding: 18px;
       border-radius: 24px;
-      font-size: 15px;
+      font-size: 20px;
       font-weight: 700;
       cursor: pointer;
       border: none;
@@ -269,11 +270,11 @@
     .tab-row { display: flex; gap: 8px; margin-bottom: 16px; }
     .tab-btn {
       flex: 1;
-      padding: 10px;
+      padding: 12px;
       border-radius: 12px;
       border: 2px solid var(--pink-border);
       background: white;
-      font-size: 13px;
+      font-size: 17px;
       font-weight: 700;
       color: var(--muted);
       cursor: pointer;
@@ -293,10 +294,10 @@
     }
     .record-medal { font-size: 22px; margin-right: 10px; }
     .record-info { flex: 1; }
-    .record-date { font-size: 12px; color: var(--muted); }
-    .record-diff { font-size: 13px; font-weight: 600; color: var(--text); }
-    .record-score { font-size: 12px; color: var(--muted); }
-    .record-stars { font-size: 16px; font-weight: 800; color: var(--gold); }
+    .record-date { font-size: 16px; color: var(--muted); }
+    .record-diff { font-size: 18px; font-weight: 600; color: var(--text); }
+    .record-score { font-size: 15px; color: var(--muted); }
+    .record-stars { font-size: 22px; font-weight: 800; color: var(--gold); }
     .wrong-item {
       background: white;
       border: 1.5px solid var(--pink-border);
@@ -304,16 +305,16 @@
       padding: 14px 16px;
       margin-bottom: 10px;
     }
-    .wrong-chengyu { font-size: 20px; font-weight: 800; color: var(--pink); margin-bottom: 4px; }
-    .wrong-meaning { font-size: 13px; color: var(--text); margin-bottom: 8px; }
+    .wrong-chengyu { font-size: 26px; font-weight: 800; color: var(--pink); margin-bottom: 6px; }
+    .wrong-meaning { font-size: 18px; color: var(--text); margin-bottom: 10px; }
     .wrong-actions { display: flex; gap: 8px; }
     .wrong-story-btn {
       background: none;
       border: 1.5px solid var(--pink);
       border-radius: 8px;
       color: var(--pink);
-      font-size: 12px;
-      padding: 4px 10px;
+      font-size: 16px;
+      padding: 8px 14px;
       cursor: pointer;
       font-weight: 600;
     }
@@ -322,22 +323,22 @@
       border: 1.5px solid #FFCDD2;
       border-radius: 8px;
       color: #E57373;
-      font-size: 12px;
-      padding: 4px 10px;
+      font-size: 16px;
+      padding: 8px 14px;
       cursor: pointer;
       font-weight: 600;
     }
-    .wrong-story { font-size: 12px; color: #555; line-height: 1.6; margin-top: 8px; display: none; background: var(--pink-light); border-radius: 8px; padding: 8px; }
+    .wrong-story { font-size: 17px; color: #555; line-height: 1.7; margin-top: 8px; display: none; background: var(--pink-light); border-radius: 8px; padding: 12px; }
     .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
     .empty-emoji { font-size: 48px; margin-bottom: 12px; }
-    .empty-text { font-size: 15px; }
+    .empty-text { font-size: 20px; }
     .review-btn {
       background: var(--pink);
       color: white;
       border: none;
       border-radius: 16px;
-      padding: 12px 24px;
-      font-size: 14px;
+      padding: 16px 24px;
+      font-size: 19px;
       font-weight: 700;
       cursor: pointer;
       margin-bottom: 16px;
@@ -347,8 +348,8 @@
       background: none;
       border: 1.5px solid #FFCDD2;
       border-radius: 16px;
-      padding: 10px 24px;
-      font-size: 13px;
+      padding: 14px 24px;
+      font-size: 17px;
       font-weight: 600;
       color: #E57373;
       cursor: pointer;
