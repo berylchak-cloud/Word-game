@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>成語星星樂園 🌟</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --pink: #FF6B9D;
+      --pink-light: #FFF0F5;
+      --pink-border: #FDDDE6;
+      --gold: #FFD700;
+      --green: #4CAF50;
+      --orange: #FF9800;
+      --red: #F44336;
+      --purple: #A78BFA;
+      --text: #3D2C35;
+      --muted: #B8899A;
+      --white: #FFFFFF;
+      --surface: #FAFAFA;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      background: linear-gradient(135deg, #FFF0F5 0%, #FFF8FC 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0;
+    }
+    .app {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 0 40px rgba(255,107,157,0.1);
+    }
+
+    /* ===== SCREENS ===== */
+    .screen { display: none; flex-direction: column; flex: 1; }
+    .screen.active { display: flex; }
+
+    /* ===== HOME SCREEN ===== */
+    #home {
+      padding: 24px 20px;
+      overflow-y: auto;
+      align-items: center;
+      background: linear-gradient(180deg, #FFF0F5 0%, #FFFFFF 40%);
+    }
+    .logo-wrap { text-align: center; margin-bottom: 16px; }
+    .logo-img { width: 90px; height: 90px; border-radius: 22px; object-fit: cover; }
+    .logo-emoji { font-size: 72px; line-height: 1; }
+    .app-title { font-size: 28px; font-weight: 800; color: var(--pink); letter-spacing: 2px; margin-bottom: 4px; }
+    .app-sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+    .stars-card {
+      background: var(--pink-light);
+      border: 2px solid var(--pink-border);
+      border-radius: 20px;
+      padding: 14px 40px;
+      text-align: center;
+      margin-bottom: 24px;
+      width: 100%;
+    }
+    .stars-label { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+    .stars-count { font-size: 36px; font-weight: 800; color: var(--gold); }
+    .stars-count::before { content: "⭐ "; font-size: 28px; }
+    .section-title { font-size: 17px; font-weight: 700; color: var(--text); align-self: flex-start; margin-bottom: 12px; }
+    .diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-bottom: 24px; }
+    .diff-card {
+      background: white;
+      border: 2.5px solid var(--pink-border);
+      border-radius: 18px;
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.18s;
+      user-select: none;
+    }
+    .diff-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(255,107,157,0.15); }
+    .diff-card.selected { background: var(--pink-light); }
+    .diff-card.selected.beginner { border-color: var(--pink); }
+    .diff-card.selected.easy { border-color: var(--green); }
+    .diff-card.selected.medium { border-color: var(--orange); }
+    .diff-card.selected.hard { border-color: var(--red); }
+    .diff-card.selected.mixed { border-color: var(--purple); }
+    .diff-emoji { font-size: 26px; margin-bottom: 5px; }
+    .diff-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+    .diff-card.selected.beginner .diff-name { color: var(--pink); }
+    .diff-card.selected.easy .diff-name { color: var(--green); }
+    .diff-card.selected.medium .diff-name { color: var(--orange); }
+    .diff-card.selected.hard .diff-name { color: var(--red); }
+    .diff-card.selected.mixed .diff-name { color: var(--purple); }
+    .diff-desc { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .diff-stars { font-size: 12px; font-weight: 700; color: var(--muted); }
+    .diff-card.selected.beginner .diff-stars { color: var(--pink); }
+    .diff-card.selected.easy .diff-stars { color: var(--green); }
+    .diff-card.selected.medium .diff-stars { color: var(--orange); }
+    .diff-card.selected.hard .diff-stars { color: var(--red); }
+    .diff-card.selected.mixed .diff-stars { color: var(--purple); }
+    .diff-mixed { grid-column: 1 / -1; }
+    .start-btn {
+      background: var(--pink);
+      color: white;
+      border: none;
+      border-radius: 32px;
+      padding: 18px 60px;
+      font-size: 19px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 18px rgba(255,107,157,0.4);
+      transition: all 0.15s;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+    .start-btn:hover { transform: scale(1.03); box-shadow: 0 6px 24px rgba(255,107,157,0.5); }
+    .start-btn:active { transform: scale(0.97); }
+    .nav-tabs {
+      display: flex;
+      border-top: 1px solid var(--pink-border);
+      background: white;
+      position: sticky;
+      bottom: 0;
+    }
+    .nav-tab {
+      flex: 1;
+      padding: 12px 0;
+      text-align: center;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--muted);
+      border: none;
+      background: none;
+      transition: color 0.15s;
+    }
+    .nav-tab.active { color: var(--pink); font-weight: 700; }
+    .nav-tab-icon { font-size: 22px; display: block; margin-bottom: 2px; }
+
+    /* ===== GAME SCREEN ===== */
+    #game { padding: 20px; overflow-y: auto; }
+    .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .progress-info { font-size: 13px; color: var(--muted); font-weight: 600; }
+    .session-stars { font-size: 14px; font-weight: 700; color: var(--gold); }
+    .progress-bar-wrap { background: var(--pink-border); border-radius: 8px; height: 8px; margin-bottom: 20px; overflow: hidden; }
+    .progress-bar { background: linear-gradient(90deg, var(--pink), #FF8EC0); height: 100%; border-radius: 8px; transition: width 0.4s; }
+    .question-card {
+      background: var(--pink-light);
+      border: 2px solid var(--pink-border);
+      border-radius: 24px;
+      padding: 24px 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .chengyu-text { font-size: 36px; font-weight: 800; color: var(--pink); letter-spacing: 4px; margin-bottom: 8px; }
+    .question-text { font-size: 15px; color: var(--text); line-height: 1.5; }
+    .options-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .option-btn {
+      background: white;
+      border: 2.5px solid var(--pink-border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 14px;
+      color: var(--text);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .option-btn:hover:not(:disabled) { background: var(--pink-light); border-color: var(--pink); transform: translateX(3px); }
+    .option-btn.correct { background: #E8F5E9; border-color: var(--green); color: #2E7D32; }
+    .option-btn.wrong { background: #FFEBEE; border-color: var(--red); color: #C62828; }
+    .option-btn:disabled { cursor: default; }
+    .option-label {
+      background: var(--pink-border);
+      color: var(--pink);
+      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .option-btn.correct .option-label { background: #C8E6C9; color: #2E7D32; }
+    .option-btn.wrong .option-label { background: #FFCDD2; color: #C62828; }
+    .feedback-box {
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      display: none;
+    }
+    .feedback-box.correct { background: #E8F5E9; border: 2px solid #A5D6A7; }
+    .feedback-box.wrong { background: #FFEBEE; border: 2px solid #FFCDD2; }
+    .feedback-title { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+    .feedback-box.correct .feedback-title { color: #2E7D32; }
+    .feedback-box.wrong .feedback-title { color: #C62828; }
+    .feedback-text { font-size: 13px; color: var(--text); line-height: 1.5; }
+    .story-toggle {
+      background: none;
+      border: 1.5px solid var(--pink);
+      border-radius: 10px;
+      color: var(--pink);
+      font-size: 13px;
+      padding: 6px 12px;
+      cursor: pointer;
+      margin-top: 8px;
+      font-weight: 600;
+    }
+    .story-text { font-size: 13px; color: #555; line-height: 1.6; margin-top: 8px; display: none; background: white; border-radius: 10px; padding: 10px; }
+    .next-btn {
+      background: var(--pink);
+      color: white;
+      border: none;
+      border-radius: 24px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      display: none;
+      transition: all 0.15s;
+    }
+    .next-btn:hover { transform: scale(1.02); }
+    .next-btn:active { transform: scale(0.98); }
+
+    /* ===== RESULT SCREEN ===== */
+    #result { padding: 32px 20px; align-items: center; overflow-y: auto; }
+    .rank-emoji { font-size: 72px; margin-bottom: 8px; }
+    .rank-label { font-size: 24px; font-weight: 800; color: var(--pink); margin-bottom: 20px; }
+    .result-card {
+      background: var(--pink-light);
+      border: 2px solid var(--pink-border);
+      border-radius: 24px;
+      padding: 24px;
+      width: 100%;
+      margin-bottom: 24px;
+    }
+    .result-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--pink-border); }
+    .result-row:last-child { border-bottom: none; }
+    .result-key { font-size: 14px; color: var(--muted); }
+    .result-val { font-size: 16px; font-weight: 700; color: var(--text); }
+    .result-stars-big { font-size: 28px; font-weight: 800; color: var(--gold); }
+    .result-btns { display: flex; gap: 12px; width: 100%; }
+    .result-btn {
+      flex: 1;
+      padding: 16px;
+      border-radius: 24px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+    .result-btn:active { transform: scale(0.97); }
+    .btn-replay { background: var(--pink); color: white; box-shadow: 0 4px 14px rgba(255,107,157,0.35); }
+    .btn-home { background: white; color: var(--pink); border: 2px solid var(--pink); }
+
+    /* ===== RECORDS SCREEN ===== */
+    #records { overflow-y: auto; flex: 1; }
+    .records-header { padding: 20px 20px 0; }
+    .tab-row { display: flex; gap: 8px; margin-bottom: 16px; }
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 12px;
+      border: 2px solid var(--pink-border);
+      background: white;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tab-btn.active { background: var(--pink); color: white; border-color: var(--pink); }
+    .records-list { padding: 0 20px 20px; }
+    .record-item {
+      background: white;
+      border: 1.5px solid var(--pink-border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .record-medal { font-size: 22px; margin-right: 10px; }
+    .record-info { flex: 1; }
+    .record-date { font-size: 12px; color: var(--muted); }
+    .record-diff { font-size: 13px; font-weight: 600; color: var(--text); }
+    .record-score { font-size: 12px; color: var(--muted); }
+    .record-stars { font-size: 16px; font-weight: 800; color: var(--gold); }
+    .wrong-item {
+      background: white;
+      border: 1.5px solid var(--pink-border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+    .wrong-chengyu { font-size: 20px; font-weight: 800; color: var(--pink); margin-bottom: 4px; }
+    .wrong-meaning { font-size: 13px; color: var(--text); margin-bottom: 8px; }
+    .wrong-actions { display: flex; gap: 8px; }
+    .wrong-story-btn {
+      background: none;
+      border: 1.5px solid var(--pink);
+      border-radius: 8px;
+      color: var(--pink);
+      font-size: 12px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .wrong-del-btn {
+      background: none;
+      border: 1.5px solid #FFCDD2;
+      border-radius: 8px;
+      color: #E57373;
+      font-size: 12px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .wrong-story { font-size: 12px; color: #555; line-height: 1.6; margin-top: 8px; display: none; background: var(--pink-light); border-radius: 8px; padding: 8px; }
+    .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+    .empty-emoji { font-size: 48px; margin-bottom: 12px; }
+    .empty-text { font-size: 15px; }
+    .review-btn {
+      background: var(--pink);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 16px;
+      width: 100%;
+    }
+    .clear-btn {
+      background: none;
+      border: 1.5px solid #FFCDD2;
+      border-radius: 16px;
+      padding: 10px 24px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #E57373;
+      cursor: pointer;
+      margin-bottom: 16px;
+      width: 100%;
+    }
+
+    /* ===== STAR ANIMATION ===== */
+    .star-pop {
+      position: fixed;
+      font-size: 28px;
+      pointer-events: none;
+      animation: starFly 0.9s ease-out forwards;
+      z-index: 999;
+    }
+    @keyframes starFly {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-80px) scale(1.5); opacity: 0; }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (min-width: 480px) {
+      .app { margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HOME SCREEN -->
+  <div id="home" class="screen active">
+    <div class="logo-wrap">
+      <div class="logo-emoji">🌟</div>
+    </div>
+    <div class="app-title">成語星星樂園</div>
+    <div class="app-sub">學成語，贏星星！</div>
+
+    <div class="stars-card">
+      <div class="stars-label">累積星星</div>
+      <div class="stars-count" id="total-stars">0</div>
+    </div>
+
+    <div class="section-title">選擇難度</div>
+    <div class="diff-grid">
+      <div class="diff-card beginner selected" data-diff="beginner" onclick="selectDiff(this)">
+        <div class="diff-emoji">🌞</div>
+        <div class="diff-name">小學生</div>
+        <div class="diff-desc">一字頭、不字頭</div>
+        <div class="diff-stars">★</div>
+      </div>
+      <div class="diff-card easy" data-diff="easy" onclick="selectDiff(this)">
+        <div class="diff-emoji">🌸</div>
+        <div class="diff-name">簡單</div>
+        <div class="diff-desc">適合初學者</div>
+        <div class="diff-stars">★</div>
+      </div>
+      <div class="diff-card medium" data-diff="medium" onclick="selectDiff(this)">
+        <div class="diff-emoji">🌟</div>
+        <div class="diff-name">普通</div>
+        <div class="diff-desc">挑戰一下！</div>
+        <div class="diff-stars">★★</div>
+      </div>
+      <div class="diff-card hard" data-diff="hard" onclick="selectDiff(this)">
+        <div class="diff-emoji">🔥</div>
+        <div class="diff-name">困難</div>
+        <div class="diff-desc">成語達人</div>
+        <div class="diff-stars">★★★</div>
+      </div>
+      <div class="diff-card mixed diff-mixed" data-diff="mixed" onclick="selectDiff(this)">
+        <div class="diff-emoji">🎲</div>
+        <div class="diff-name">混合</div>
+        <div class="diff-desc">隨機出題</div>
+        <div class="diff-stars">★~★★★</div>
+      </div>
+    </div>
+
+    <button class="start-btn" onclick="startGame()">🚀 開始遊戲！</button>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showTab('home-content')">
+        <span class="nav-tab-icon">🏠</span>首頁
+      </button>
+      <button class="nav-tab" onclick="showScreen('records'); showRecordsTab('history')">
+        <span class="nav-tab-icon">⭐</span>紀錄
+      </button>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="game" class="screen">
+    <div class="game-header">
+      <div class="progress-info" id="progress-info">第 1 / 10 題</div>
+      <div class="session-stars" id="session-stars">⭐ 0</div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progress-bar" style="width:10%"></div>
+    </div>
+    <div class="question-card">
+      <div class="chengyu-text" id="chengyu-text">成語</div>
+      <div class="question-text" id="question-text">問題</div>
+    </div>
+    <div class="options-grid" id="options-grid"></div>
+    <div class="feedback-box" id="feedback-box">
+      <div class="feedback-title" id="feedback-title"></div>
+      <div class="feedback-text" id="feedback-text"></div>
+      <button class="story-toggle" onclick="toggleStory()">📖 查看典故說明</button>
+      <div class="story-text" id="story-text"></div>
+    </div>
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">下一題 →</button>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result" class="screen">
+    <div class="rank-emoji" id="rank-emoji">🌟</div>
+    <div class="rank-label" id="rank-label">非常優秀！</div>
+    <div class="result-card">
+      <div class="result-row">
+        <span class="result-key">本局星星</span>
+        <span class="result-stars-big" id="result-stars">⭐ 0</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">答對題數</span>
+        <span class="result-val" id="result-correct">0 / 10</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">正確率</span>
+        <span class="result-val" id="result-percent">0%</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">累積星星</span>
+        <span class="result-val" id="result-total">⭐ 0</span>
+      </div>
+    </div>
+    <div class="result-btns">
+      <button class="result-btn btn-replay" onclick="replayGame()">🔁 再玩一次</button>
+      <button class="result-btn btn-home" onclick="showScreen('home')">🏠 回首頁</button>
+    </div>
+  </div>
+
+  <!-- RECORDS SCREEN -->
+  <div id="records" class="screen">
+    <div class="records-header">
+      <h2 style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:12px;">📊 遊戲紀錄</h2>
+      <div class="tab-row">
+        <button class="tab-btn active" id="tab-history" onclick="showRecordsTab('history')">📜 歷史紀錄</button>
+        <button class="tab-btn" id="tab-wrong" onclick="showRecordsTab('wrong')">📝 錯題本</button>
+      </div>
+    </div>
+    <div class="records-list" id="records-list"></div>
+    <div class="nav-tabs">
+      <button class="nav-tab" onclick="showScreen('home')">
+        <span class="nav-tab-icon">🏠</span>首頁
+      </button>
+      <button class="nav-tab active">
+        <span class="nav-tab-icon">⭐</span>紀錄
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===== DATA =====
+let questions = [];
+let state = {
+  totalStars: 0,
+  history: [],
+  wrongQuestions: [],
+  currentQuestions: [],
+  currentIndex: 0,
+  sessionStars: 0,
+  sessionCorrect: 0,
+  difficulty: 'beginner',
+  answered: false,
+};
+
+const DIFF_LABELS = {
+  beginner: '🌞 小學生',
+  easy: '🌸 簡單',
+  medium: '🌟 普通',
+  hard: '🔥 困難',
+  mixed: '🎲 混合',
+};
+
+// ===== STORAGE =====
+function saveState() {
+  localStorage.setItem('chengyu_stars', state.totalStars);
+  localStorage.setItem('chengyu_history', JSON.stringify(state.history));
+  localStorage.setItem('chengyu_wrong', JSON.stringify(state.wrongQuestions));
+}
+function loadState() {
+  state.totalStars = parseInt(localStorage.getItem('chengyu_stars') || '0');
+  state.history = JSON.parse(localStorage.getItem('chengyu_history') || '[]');
+  state.wrongQuestions = JSON.parse(localStorage.getItem('chengyu_wrong') || '[]');
+  document.getElementById('total-stars').textContent = state.totalStars;
+}
+
+// ===== SHUFFLE =====
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function shuffleQuestion(q) {
+  const indices = shuffle([0,1,2,3]);
+  return {
+    ...q,
+    shuffledOptions: indices.map(i => q.options[i]),
+    shuffledAnswer: indices.indexOf(q.answer),
+  };
+}
+
+// ===== NAVIGATION =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'home') {
+    document.getElementById('total-stars').textContent = state.totalStars;
+  }
+}
+
+// ===== DIFFICULTY =====
+function selectDiff(el) {
+  document.querySelectorAll('.diff-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  state.difficulty = el.dataset.diff;
+}
+
+// ===== GAME =====
+function getQuestions(diff) {
+  if (diff === 'mixed') {
+    const pool = shuffle(questions);
+    return pool.slice(0, 10).map(shuffleQuestion);
+  }
+  const pool = questions.filter(q => q.difficulty === diff);
+  return shuffle(pool).slice(0, 10).map(shuffleQuestion);
+}
+
+function startGame(reviewMode = false) {
+  let qs;
+  if (reviewMode) {
+    qs = shuffle(state.wrongQuestions).slice(0, 10).map(shuffleQuestion);
+    state.difficulty = 'mixed';
+  } else {
+    qs = getQuestions(state.difficulty);
+  }
+  if (qs.length === 0) {
+    alert('此難度暫無題目！');
+    return;
+  }
+  state.currentQuestions = qs;
+  state.currentIndex = 0;
+  state.sessionStars = 0;
+  state.sessionCorrect = 0;
+  state.answered = false;
+  showScreen('game');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = state.currentQuestions[state.currentIndex];
+  const total = state.currentQuestions.length;
+  const idx = state.currentIndex;
+
+  document.getElementById('progress-info').textContent = `第 ${idx+1} / ${total} 題`;
+  document.getElementById('session-stars').textContent = `⭐ ${state.sessionStars}`;
+  document.getElementById('progress-bar').style.width = `${((idx+1)/total)*100}%`;
+  document.getElementById('chengyu-text').textContent = q.chengyu;
+  document.getElementById('question-text').textContent = q.question;
+
+  const grid = document.getElementById('options-grid');
+  grid.innerHTML = '';
+  const labels = ['A', 'B', 'C', 'D'];
+  q.shuffledOptions.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-label">${labels[i]}</span>${opt}`;
+    btn.onclick = () => selectAnswer(i, btn);
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('feedback-box').style.display = 'none';
+  document.getElementById('feedback-box').className = 'feedback-box';
+  document.getElementById('next-btn').style.display = 'none';
+  document.getElementById('story-text').style.display = 'none';
+  state.answered = false;
+}
+
+function selectAnswer(idx, btn) {
+  if (state.answered) return;
+  state.answered = true;
+  const q = state.currentQuestions[state.currentIndex];
+  const isCorrect = idx === q.shuffledAnswer;
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b => b.disabled = true);
+
+  if (isCorrect) {
+    btn.classList.add('correct');
+    state.sessionStars += q.stars;
+    state.sessionCorrect++;
+    document.getElementById('session-stars').textContent = `⭐ ${state.sessionStars}`;
+    showFeedback(true, q);
+    popStars(q.stars);
+  } else {
+    btn.classList.add('wrong');
+    btns[q.shuffledAnswer].classList.add('correct');
+    showFeedback(false, q);
+    addWrong(q);
+  }
+
+  document.getElementById('next-btn').style.display = 'block';
+  document.getElementById('next-btn').textContent =
+    state.currentIndex + 1 >= state.currentQuestions.length ? '查看結果 🎉' : '下一題 →';
+}
+
+function showFeedback(correct, q) {
+  const box = document.getElementById('feedback-box');
+  box.style.display = 'block';
+  box.className = `feedback-box ${correct ? 'correct' : 'wrong'}`;
+  document.getElementById('feedback-title').textContent = correct
+    ? `✅ 答對了！+${q.stars}⭐`
+    : `❌ 答錯了！正確答案是：${q.shuffledOptions[q.shuffledAnswer]}`;
+  document.getElementById('feedback-text').textContent = q.meaning;
+  document.getElementById('story-text').textContent = q.story;
+  document.getElementById('story-text').style.display = 'none';
+}
+
+function toggleStory() {
+  const s = document.getElementById('story-text');
+  s.style.display = s.style.display === 'none' ? 'block' : 'none';
+}
+
+function nextQuestion() {
+  if (state.currentIndex + 1 >= state.currentQuestions.length) {
+    finishGame();
+  } else {
+    state.currentIndex++;
+    renderQuestion();
+  }
+}
+
+function finishGame() {
+  const total = state.currentQuestions.length;
+  const percent = Math.round((state.sessionCorrect / total) * 100);
+  state.totalStars += state.sessionStars;
+
+  const record = {
+    date: new Date().toLocaleDateString('zh-TW'),
+    difficulty: state.difficulty,
+    stars: state.sessionStars,
+    correct: state.sessionCorrect,
+    total,
+    percent,
+  };
+  state.history = [record, ...state.history].slice(0, 20);
+  saveState();
+
+  // Render result
+  let emoji, label;
+  if (percent === 100) { emoji = '👑'; label = '成語大師！'; }
+  else if (percent >= 80) { emoji = '🌟'; label = '非常優秀！'; }
+  else if (percent >= 60) { emoji = '😊'; label = '繼續加油！'; }
+  else { emoji = '📚'; label = '多多練習！'; }
+
+  document.getElementById('rank-emoji').textContent = emoji;
+  document.getElementById('rank-label').textContent = label;
+  document.getElementById('result-stars').textContent = `⭐ ${state.sessionStars}`;
+  document.getElementById('result-correct').textContent = `${state.sessionCorrect} / ${total}`;
+  document.getElementById('result-percent').textContent = `${percent}%`;
+  document.getElementById('result-total').textContent = `⭐ ${state.totalStars}`;
+
+  showScreen('result');
+}
+
+function replayGame() {
+  startGame();
+}
+
+// ===== WRONG QUESTIONS =====
+function addWrong(q) {
+  if (!state.wrongQuestions.find(w => w.id === q.id)) {
+    state.wrongQuestions.push(q);
+  }
+}
+function removeWrong(id) {
+  state.wrongQuestions = state.wrongQuestions.filter(q => q.id !== id);
+  saveState();
+  showRecordsTab('wrong');
+}
+function clearWrong() {
+  if (confirm('確定清空所有錯題？')) {
+    state.wrongQuestions = [];
+    saveState();
+    showRecordsTab('wrong');
+  }
+}
+
+// ===== RECORDS =====
+let currentRecordsTab = 'history';
+function showRecordsTab(tab) {
+  currentRecordsTab = tab;
+  document.getElementById('tab-history').className = `tab-btn ${tab === 'history' ? 'active' : ''}`;
+  document.getElementById('tab-wrong').className = `tab-btn ${tab === 'wrong' ? 'active' : ''}`;
+  const list = document.getElementById('records-list');
+
+  if (tab === 'history') {
+    if (state.history.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div class="empty-emoji">📭</div><div class="empty-text">還沒有遊戲紀錄<br>快去玩一局吧！</div></div>`;
+      return;
+    }
+    list.innerHTML = state.history.map((r, i) => {
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}.`;
+      return `<div class="record-item">
+        <span class="record-medal">${medal}</span>
+        <div class="record-info">
+          <div class="record-diff">${DIFF_LABELS[r.difficulty] || r.difficulty}</div>
+          <div class="record-score">答對 ${r.correct}/${r.total} (${r.percent}%) · ${r.date}</div>
+        </div>
+        <div class="record-stars">⭐ ${r.stars}</div>
+      </div>`;
+    }).join('');
+  } else {
+    if (state.wrongQuestions.length === 0) {
+      list.innerHTML = `<div class="empty-state"><div class="empty-emoji">🎉</div><div class="empty-text">錯題本是空的<br>繼續保持！</div></div>`;
+      return;
+    }
+    list.innerHTML = `
+      <button class="review-btn" onclick="startGame(true)">🔁 開始複習錯題 (${state.wrongQuestions.length} 題)</button>
+      <button class="clear-btn" onclick="clearWrong()">🗑️ 清空錯題本</button>
+      ${state.wrongQuestions.map(q => `
+        <div class="wrong-item">
+          <div class="wrong-chengyu">${q.chengyu}</div>
+          <div class="wrong-meaning">${q.meaning}</div>
+          <div class="wrong-actions">
+            <button class="wrong-story-btn" onclick="toggleWrongStory(${q.id})">📖 典故</button>
+            <button class="wrong-del-btn" onclick="removeWrong(${q.id})">✕ 刪除</button>
+          </div>
+          <div class="wrong-story" id="wrong-story-${q.id}">${q.story}</div>
+        </div>
+      `).join('')}
+    `;
+  }
+}
+function toggleWrongStory(id) {
+  const el = document.getElementById(`wrong-story-${id}`);
+  el.style.display = el.style.display === 'none' || !el.style.display ? 'block' : 'none';
+}
+
+// ===== STAR ANIMATION =====
+function popStars(count) {
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const star = document.createElement('div');
+      star.className = 'star-pop';
+      star.textContent = '⭐';
+      star.style.left = (30 + Math.random() * 40) + '%';
+      star.style.top = (40 + Math.random() * 20) + '%';
+      document.body.appendChild(star);
+      setTimeout(() => star.remove(), 900);
+    }, i * 150);
+  }
+}
+
+// ===== INIT =====
+async function init() {
+  try {
+    const res = await fetch('./questions.json');
+    questions = await res.json();
+  } catch(e) {
+    console.error('Failed to load questions', e);
+  }
+  loadState();
+}
+
+init();
+</script>
+</body>
+</html>
